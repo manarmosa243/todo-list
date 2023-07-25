@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="/dist/output.css">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+</head>
+
+<body class="bg-gray-200 py-10 ">
+    <div class="max-w-xl mx-auto ">
+        <h1
+            class=" p-6 bg-blue-950 border-2 shadow-sm border-blue-400 rounded-lg text-white font-Lugrasimo text-4xl font-semibold text-center">
+            Todo List</h1>
+        <div class="shadow-sm mx-7 mt-4 bg-slate-300  rounded-sm p-4">
+            <form id="todo-form">
+                <label class="text-left font-libre text-2xl rounded-sm  text-blue-950 font-semibold mb-4" for="todo-input">
+                    Add new task:</label>
+                <div class="flex  justify-between px-8 my-4">
+                    <input
+                        class="rounded-lg  border border-gray-300  py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                        type="text" id="todo-input" name="todo-input" placeholder="Enter your task...">
+                    <button class="rounded-lg bg-blue-950 hover:bg-blue-800 text-white font-bold py-2 px-4"
+                        type="submit">Add</button>
+                </div>
+            </form>
+            <ul class="px-10 my-4 " id="todo-list">
+            </ul>
+        </div>
+    </div>
+    <script>
+        const todoForm = document.getElementById('todo-form');
+        const todoInput = document.getElementById('todo-input');
+        const todoList = document.getElementById('todo-list');
+
+        let todos = [];
+
+        function add() {
+            todoList.innerHTML = '';
+            todos.forEach((todo, index) => {
+                const li = document.createElement('li');
+                li.className = 'flex justify-between py-2';
+                const text = document.createElement('span');
+                text.className = todo.complete ? 'line-through text-gray-500' : '';
+                text.textContent = todo.text;
+                li.appendChild(text);
+                const buttons = document.createElement('div');
+                buttons.innerHTML = `
+    <button class="complete mx-2" data-action="complete" data-index="${index}" title="Mark as complete">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-green-400 border-green-800 rounded-full" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-width="8" stroke-linecap="round" stroke-linejoin="round" d="M9 15l6 6L21 9" />
+</svg>
+</button>  
+    <button class="delete mx-2" data-action="delete" data-index="${index}" title="delete">
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-red-700 border-red-700 rounded-full" viewBox="0 0 20 20" fill="currentColor">
+    <path fill-rule="evenodd" d="M14.95 5.364a1.5 1.5 0 0 0-2.12-2.122L10 7.879 7.172 5.05A1.5 1.5 0 1 0 4.05 8.172L6.879 11 4.05 13.828a1.5 1.5 0 1 0 2.122 2.122L10 13.121l2.828 2.828a1.5 1.5 0 0 0 2.12-2.122L13.121 11l2.828-2.828z"/>
+  </svg>
+</button>
+      `;
+                li.appendChild(buttons);
+                todoList.appendChild(li);
+
+                const completeButton = buttons.getElementsByClassName('complete')[0];
+                const deleteButton = buttons.getElementsByClassName('delete')[0];
+                completeButton.addEventListener('click', () => {
+                    completeTodo(index);
+                });
+                deleteButton.addEventListener('click', () => {
+                    deleteTodo(index);
+                });
+            });
+        }
+
+        function addTodo() {
+            const text = todoInput.value.trim();
+            if (text !== '') {
+                todos.push({ text, complete: false });
+                todoInput.value = '';
+                add();
+            }
+        }
+
+        function completeTodo(index) {
+            todos[index].complete = true;
+            add();
+        }
+
+        function deleteTodo(index) {
+            todos.splice(index, 1);
+            add();
+        }
+
+        todoForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            addTodo();
+        });
+
+        add();
+    </script>
+</body>
+
+</html>
